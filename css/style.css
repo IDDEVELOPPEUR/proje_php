@@ -1,0 +1,30 @@
+.lecontener {
+    width: 500px;
+    align-items: center;
+    justify-content: center;
+    padding: top 60px;
+}
+
+.leconteneurIns {
+    width: 500px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 30%
+}
+.lien{
+    text-decoration: none;
+    color: #02621b;
+}
+.lien2{
+    text-decoration: none;
+    color: #0d00ff;
+}
+.lien2 :hover{
+    text-decoration: none;
+    color: #ff0000;
+}
+
+.mon-anime:hover{
+        transform: translateY(4px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);  
+}
