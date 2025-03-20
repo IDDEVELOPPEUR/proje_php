@@ -4,6 +4,11 @@ session_start();
 //inclusion de la page de connection
 include "connexion.php";
 
+    //verifier si la session de l'utilisateur exit toujours 
+    if(!$_SESSION['idPersonne']){
+      header("location:authentification.php?messagER=Veillez vous connecter !");
+    }
+
 //      Partie salle
 //on selectionne toutes les sallles dont que l'utilisateur a reservé
 $req = $con->prepare("select * from personne  inner join reserverSalle on idPersonne=FK_personne inner join salle  on idSalle=FK_Salle where FK_personne= :session");

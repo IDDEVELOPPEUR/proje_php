@@ -126,3 +126,9 @@ update reserversalle set `FK_personne` = 1 where `numReservation` =1;
 show tables;
 select * FROM reservermateriel;
 TRUNCATE Table reserversalle; 
+
+select * from reservermateriel;
+
+delete from reservermateriel;
+
+select * from materiel;

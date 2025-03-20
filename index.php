@@ -1,9 +1,15 @@
 <?php 
     session_start();
     include "connexion.php";
+    //pour les salles reservées
     $req = $con->prepare("select * from personne p join reserversalle rs on p.`idPersonne` = rs.`FK_personne` join salle s on s.`idSalle` = rs.`FK_Salle`");  
     $req->execute();
     $reservations = $req->fetchAll(PDO::FETCH_ASSOC);
+    //pour les materiels reservés
+    $req2 = $con->prepare("select * from personne p join reservermateriel rm on p.`idPersonne` = rm.`FK_personne` join materiel m on m.`idMateriel` = rm.`FK_materiel`");  
+    $req2->execute();
+    $reservationsMateriel = $req2->fetchAll(PDO::FETCH_ASSOC);
+   
 
 ?>
 <!DOCTYPE html>
@@ -81,6 +87,41 @@
    
                     </tbody>
                 </table>
+
+                <br> <hr> <br>
+                <h1 class="text-center">Planning des materiels</h1><hr>
+
+                <table class="table table-hover text-center table-bordered ">
+                    <thead >
+                        <tr>
+                            <th class="text-bg-success">Numéro réservation</th>
+                            <th class="text-bg-success">Date début</th>
+                            <th class="text-bg-success">Heure début</th>
+                            <th class="text-bg-success">Date fin</th>
+                            <th class="text-bg-success">Nom matériel</th>
+                            <th class="text-bg-success">Modèle</th>
+                            <th class="text-bg-success">Marque</th>
+                            <th class="text-bg-success">Enseignant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($reservationsMateriel as $re) {?>
+                        <tr>
+                            <td><?php echo $re['numReservation'];?></td>
+                            <td><?php echo $re['dateRS'];?></td>
+                            <td><?php echo $re['heureRS'];?></td>
+                            <td><?php echo $re['dateFin'];?></td>
+                            <td><?php echo $re['nomMateriel'];?></td>
+                            <td><?php echo $re['modele'];?></td>
+                            <td><?php echo $re['marque'];?></td>
+                            <td><?php echo $re['prenom']." ".$re['nom'];?></td>
+                        </tr>
+                        <?php }?>
+        
+   
+                    </tbody>
+                </table>
+
             </div>
         </div>
 

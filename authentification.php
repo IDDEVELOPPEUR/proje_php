@@ -23,6 +23,10 @@
     // récupération du message que le compte est créé depuis depuis authentification.php  
     if (isset($_GET['message'])) {  
         echo '<div class="alert alert-success text-center" role="alert">' .$_GET['message']. '</div>';  
+    }
+    //recuperation du message qui dit demande à l'utilisateur de se connecter car elle voulez rentrer dans les autre page sans se connecter
+    if (isset($_GET['messagER'])) {  
+        echo '<div class="alert alert-info text-center" role="alert">' .$_GET['messagER']. '</div>';  
     }?>
         <!-- message de déconnection reussie -->
         <?php 
@@ -51,7 +55,7 @@
     </div>  <br><br>
 
     <?php  
-    
+
 
     // on traite les données entrées  
     if (isset($_POST['connecter'])) {  

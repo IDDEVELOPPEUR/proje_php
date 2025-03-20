@@ -3,6 +3,11 @@
 session_start();
 include 'connexion.php'; 
 
+    //verifier si la session de l'utilisateur exit toujours 
+    if(!$_SESSION['idPersonne']){
+      header("location:authentification.php?messagER=Veillez vous connecter !");
+    }
+
 //  la requête pour récupérer les matériels dont la quantité est supérieure à 0  
 $stmt = $con->prepare("SELECT * FROM materiel WHERE quantite > 0");  
 $stmt->execute();  
@@ -65,8 +70,6 @@ $materiels = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </body>
     <?php  
-
-    
     // Traitement du formulaire  
     if (isset($_POST["valider"])) { 
         extract($_POST); 
@@ -89,7 +92,7 @@ $materiels = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->bindParam(':heureRS', $heureRS);
             $stmt->bindParam(':FK_materiel', $FK_materiel);  
             $stmt->bindParam(':FK_personne', $FK_personne);  
-            $stmt->execute();
+            //$stmt->execute();
 
             // ici on verifie si la requete a ete execute avec succes
             if ($stmt->execute()) {  

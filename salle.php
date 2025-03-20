@@ -1,6 +1,10 @@
 <?php
     session_start();
     include 'connexion.php';
+    //si la variable de session idPersonne n"est pas présent , on le redirige vers autentification
+    if(!$_SESSION['idPersonne']){
+      header("location:authentification.php?messagER=Veillez vous connecter !");
+    }
     // @ AJOUT SUPPLEMENTAIRE
 
     //ici on verifie tous les réservations dont dateFin est supérieure à aujourd'hui et on met la disponiblité à 1
@@ -39,7 +43,6 @@
         $req->bindParam(":idSalle", $FK_Salle);
 
         try{
-        $req->execute();
 
         // Exécution de la requête  
         if ($req->execute()) {

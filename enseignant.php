@@ -1,6 +1,10 @@
 <?php
 session_start();
     include 'connexion.php';
+    //verifier si la session de l'utilisateur exit toujours 
+    if(!$_SESSION['idPersonne']){
+      header("location:authentification.php?messagER=Veillez vous connecter !");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -49,7 +53,7 @@ session_start();
      <?php if (isset($_GET['ms'])) {  
         echo '<div class="alert alert-success text-center" role="alert"><h3>' .$_GET['ms']. '</h3></div>';  
     }?>
-         
+         <br><br><br><br>
 
     <br><hr>
      <div class=" mt-6 container py-4" >  
