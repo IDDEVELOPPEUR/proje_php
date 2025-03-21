@@ -9,7 +9,20 @@
     $req2 = $con->prepare("select * from personne p join reservermateriel rm on p.`idPersonne` = rm.`FK_personne` join materiel m on m.`idMateriel` = rm.`FK_materiel`");  
     $req2->execute();
     $reservationsMateriel = $req2->fetchAll(PDO::FETCH_ASSOC);
-   
+    
+
+    //ici on supprime toutes les reservations dont la date fin est passee
+    //date courante
+    $AUJOURDHUI = date("Y-m-d"); 
+    // POUR LES RESERVATIONS DE MATERIELS
+    $sup=$con->prepare("delete from reserverMateriel where dateFin < :auj");
+    $sup->bindParam(":auj", $AUJOURDHUI);
+    $sup->execute();
+    // POUR LES RESERVATIONS DE SALLES
+    $sup1=$con->prepare("delete from reserverSalle where dateFin < :auj");
+    $sup1->bindParam(":auj", $AUJOURDHUI);
+    $sup1->execute();
+
 
 ?>
 <!DOCTYPE html>

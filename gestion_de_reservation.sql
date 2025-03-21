@@ -118,14 +118,10 @@ delete from reserversalle where `FK_personne` = 12;
 
 select * from salle;
 
-update salle set disponibilite = 1 where idSalle >0 ;
-update salle set disponibilite = 1 where idSalle >0 ;
-
-
 
 show tables;
-select * FROM reservermateriel;
-TRUNCATE Table reserversalle; 
+select * FROM personne;
+TRUNCATE Table compte; 
 
 select * from reservermateriel;
 

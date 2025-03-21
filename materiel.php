@@ -7,7 +7,6 @@ include 'connexion.php';
     if(!$_SESSION['idPersonne']){
       header("location:authentification.php?messagER=Veillez vous connecter !");
     }
-
 //  la requête pour récupérer les matériels dont la quantité est supérieure à 0  
 $stmt = $con->prepare("SELECT * FROM materiel WHERE quantite > 0");  
 $stmt->execute();  
@@ -33,6 +32,7 @@ $materiels = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <br>  
     <!-- lien vers la page enseignant -->  
     <a style="margin-left:20px;" href="enseignant.php" class="btn btn-dark" role="button">Retour</a>   
+    <a style="margin-right:20px ;float:right" href="materiel.php" class="btn  btn-outline-warning" role="button">Actualiser</a>  <br><br><br> 
     <h1 class="text-center">Réserver un Matériel</h1>
     <div class="lecontener container-fluid">  
     <form class="container" method="POST" action="">  
@@ -67,8 +67,14 @@ $materiels = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <input type="submit" name="valider" value="Réserver" class="btn btn-block btn-success">  
     </form>  
     </div>
-
+    <?php if (isset($_GET['rep'])) { ?>
+            <div class="text-center alert alert-danger" role="alert"><?php echo $_GET['rep']; ?></div>
+    <?php } ?>
 </body>
+
+
+                                <!--PHP  -->
+
     <?php  
     // Traitement du formulaire  
     if (isset($_POST["valider"])) { 
@@ -83,32 +89,58 @@ $materiels = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->execute();  
         $matSelec = $stmt->fetch(PDO::FETCH_ASSOC);  
 
-        if ($matSelec && $matSelec['quantite'] > 0) {  
+        //variable qui reçoit la date d'aujourd'hui
+        $dateAUJOURDHUI = date("Y-m-d"); 
 
-            // Insertion de la réservation dans la base de données  
-            $stmt = $con->prepare("INSERT INTO reserverMateriel (dateRS, heureRS,dateFin, FK_materiel, FK_personne) VALUES (:dateRS, :heureRS,:dateF, :FK_materiel, :FK_personne)");  
-            $stmt->bindParam(':dateRS', $dateRS);
-            $stmt->bindParam(':dateF', $dateFin);
-            $stmt->bindParam(':heureRS', $heureRS);
-            $stmt->bindParam(':FK_materiel', $FK_materiel);  
-            $stmt->bindParam(':FK_personne', $FK_personne);  
-            //$stmt->execute();
 
-            // ici on verifie si la requete a ete execute avec succes
-            if ($stmt->execute()) {  
-                //ici on diminue la quantité du matériel de 1 element  
-                $stmt = $con->prepare("UPDATE materiel SET quantite = quantite - 1 WHERE idMateriel = :FK_materiel");  
-                $stmt->bindParam(':FK_materiel', $FK_materiel);  
-                $stmt->execute();  
+        //vérification et remise de matériels dont la date fin est passé
+        //ici j'ajoute + 1 à la quantite  du materiel dont sa reservation au niveau de la table reserverMateriel est passée
+        
+
+        //vérification de la disponibilité du matériel 
+        if ($matSelec && $matSelec['quantite'] > 0) 
+        {  
+
+        
+            //on verifie si la date debut  est inferieur a aujourd'hui et si la date de fin est inferieure à la date debut
+            if($dateFin<$dateRS || $dateRS<$dateAUJOURDHUI){
+                echo "<div class='alert alert-danger text-center' role='alert'>materiel.php?rep=La date début doit être supérieure (ou égale) à aujourd'hui ou la date fin doit être supérieure à date début !</div>";  
+               
+                
+            }
+
+            else{
+
+       
+
+                    // Insertion de la réservation dans la base de données  
+                    $stmt = $con->prepare("INSERT INTO reserverMateriel (dateRS, heureRS,dateFin, FK_materiel, FK_personne) VALUES (:dateRS, :heureRS,:dateF, :FK_materiel, :FK_personne)");  
+                    $stmt->bindParam(':dateRS', $dateRS);
+                    $stmt->bindParam(':dateF', $dateFin);
+                    $stmt->bindParam(':heureRS', $heureRS);
+                    $stmt->bindParam(':FK_materiel', $FK_materiel);  
+                    $stmt->bindParam(':FK_personne', $FK_personne);  
+                
+
+                    // ici on verifie si la requete a ete execute avec succes
+                    if ($stmt->execute()) {  
+                        //ici on diminue la quantité du matériel de 1 element  
+                        $stmt = $con->prepare("UPDATE materiel SET quantite = quantite - 1 WHERE idMateriel = :FK_materiel");  
+                        $stmt->bindParam(':FK_materiel', $FK_materiel);  
+                        $stmt->execute();  
 
     
 
-                echo "<div class='alert alert-success text-center' role='alert'>Réservation effectuée avec succès !</div>";  
+                        echo "<div class='alert alert-success text-center' role='alert'>Réservation effectuée avec succès !</div>";  
                 
-            } else {  
-                echo "<div class='alert alert-danger' role='alert'>Erreur lors de la réservation.</div>";  
-            }  
-        } else {  
+                    } 
+                    else 
+                    {  
+                        echo "<div class='alert alert-danger' role='alert'>Erreur lors de la réservation.</div>";  
+                    }  
+                }        
+        }
+        else {  
             echo "<div class='alert alert-warning' role='alert'>Le matériel sélectionné n'est plus disponible.</div>";  
         }  
     }  

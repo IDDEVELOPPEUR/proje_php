@@ -61,7 +61,8 @@ $contenus = $r->fetchAll();
     }
     ?>
     <br>
-    <h1 class="text-center ">Salle réservées </h1><br>
+                <!-- TABLEAU DES SALLES RESERVEES -->
+    <h1 class="text-center ">Salles réservées </h1><br>
     <div class="container text-center ">
         <table class="table table-hover table-bordered ">
             <thead>
@@ -97,7 +98,9 @@ $contenus = $r->fetchAll();
 
 
 
-    <!--tableau de materiels reserves -->
+                     <!--tableau de materiels reserves -->
+
+
     <h1 class="text-center">Matériels réservés</h1><br>
 
     <div class="container text-center ">

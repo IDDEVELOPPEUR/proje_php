@@ -26,36 +26,50 @@
         //session_start(); 
         $FK_personne = $_SESSION['idPersonne'];
 
-    // Récupération des données au niveau du formulaire   
+        // Récupération des données au niveau du formulaire   
         $dateRS = $_POST['dateRS'];
         $dateFin = $_POST['dateFin'];
         $heureRS = $_POST['heureRS'];
         $FK_Salle = $_POST['nomSalle'];
 
-        // Préparer la requête d'insertion  
-        $req = $con->prepare("INSERT INTO reserverSalle (dateRS, heureRS,dateFin, FK_personne, FK_Salle) VALUES (:date, :heure,:dateF, :id, :idSalle)");
+        //variable qui reçoit la date d'aujourd'hui
+        $dateAUJOURDHUI = date("Y-m-d"); 
 
-        // Lier les paramètres  
-        $req->bindParam(":date", $dateRS);
-        $req->bindParam(":heure", $heureRS);
-        $req->bindParam(":dateF", $dateFin);
-        $req->bindParam(":id", $FK_personne);
-        $req->bindParam(":idSalle", $FK_Salle);
 
-       
-
-        // Exécution de la requête  
-        if ($req->execute()) {
-            // Mettre à jour la disponibilité de la salle à 0
-            $stmt = $con->prepare("UPDATE salle SET disponibilite = 0 WHERE idSalle = :IDSalle");
-            $stmt->bindParam(':IDSalle', $FK_Salle);
-            $stmt->execute();
-            header("location:voirReserves.php?SRV=Réservation effectuée avec succès !");
+        //on verifie si la date debut  est inferieur a aujourd'hui et si la date de fin est inferieure à la date debut
+        if($dateFin<$dateRS || $dateRS<$dateAUJOURDHUI){
+            header("location:salle.php? rep=La date début doit être supérieure (ou égale) à aujourd'hui ou la date fin doit être supérieure à date début !");
             exit();
-    } else {
-        header("location:salle.php?MRE=Erreur lors de la réservation de la salle !");
-        exit();
-    }
+        }
+        else{
+
+            // Préparer la requête d'insertion  
+            $req = $con->prepare("INSERT INTO reserverSalle (dateRS, heureRS,dateFin, FK_personne, FK_Salle) VALUES (:date, :heure,:dateF, :id, :idSalle)");
+            
+            // Lier les paramètres  
+            $req->bindParam(":date", $dateRS);
+            $req->bindParam(":heure", $heureRS);
+            $req->bindParam(":dateF", $dateFin);
+            $req->bindParam(":id", $FK_personne);
+            $req->bindParam(":idSalle", $FK_Salle);
+
+        
+            
+            // Exécution de la requête  ET mise a jour de la disponibilite
+            if ($req->execute()) {
+                // Mettre à jour la disponibilité de la salle à 0
+                $stmt = $con->prepare("UPDATE salle SET disponibilite = 0 WHERE idSalle = :IDSalle");
+                $stmt->bindParam(':IDSalle', $FK_Salle);
+                $stmt->execute();
+                header("location:voirReserves.php?SRV=Réservation effectuée avec succès !");
+                exit();
+            } 
+            else 
+            {
+                header("location:salle.php?MRE=Erreur lors de la réservation de la salle !");
+                exit();
+            }
+        }
 
 }
 
@@ -87,10 +101,16 @@
     <h1 class="text-center">Réservation Salle</h1>
     <div class="container lecontener container-fluid">
         <!-- Si la reservation a échoué -->
-        <!-- On récupère le message MRE -->
+        <!-- On récupère le message MRE (message de reservation erreur)-->
         <?php if (isset($_GET['MRE'])) { ?>
             <div class="text-center alert alert-danger" role="alert"><?php echo $_GET['MRE']; ?></div>
         <?php } ?>
+
+        <!-- On récupère le message d'erreur pour les dates -->
+        <?php if (isset($_GET['rep'])) { ?>
+            <div class="text-center alert alert-danger" role="alert"><?php echo $_GET['rep']; ?></div>
+        <?php } ?>
+        <!-- message qui montre que la reservation est valide -->
         <?php if (isset($_GET['MRV'])) { ?>
             <div class="text-center alert alert-success" role="alert"><?php echo $_GET['MRV']; ?></div>
         <?php } ?>
