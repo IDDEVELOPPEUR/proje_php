@@ -42,24 +42,19 @@
         $req->bindParam(":id", $FK_personne);
         $req->bindParam(":idSalle", $FK_Salle);
 
-        try{
+       
 
         // Exécution de la requête  
         if ($req->execute()) {
             // Mettre à jour la disponibilité de la salle à 0
-            $stmt = $con->prepare("UPDATE salle SET disponibilite = 0 WHERE idSalle = :idSalle");
-            $stmt->bindParam(':idSalle', $FK_Salle);
+            $stmt = $con->prepare("UPDATE salle SET disponibilite = 0 WHERE idSalle = :IDSalle");
+            $stmt->bindParam(':IDSalle', $FK_Salle);
             $stmt->execute();
-
-
             header("location:voirReserves.php?SRV=Réservation effectuée avec succès !");
             exit();
     } else {
         header("location:salle.php?MRE=Erreur lors de la réservation de la salle !");
         exit();
-    }
-    } catch(PDOException $e) {
-        echo "Erreur  lors de la reservation ! : ". $e->getMessage();
     }
 
 }

@@ -121,7 +121,7 @@ select * from salle;
 update salle set disponibilite = 1 where idSalle >0 ;
 update salle set disponibilite = 1 where idSalle >0 ;
 
-update reserversalle set `FK_personne` = 1 where `numReservation` =1;
+
 
 show tables;
 select * FROM reservermateriel;
@@ -129,6 +129,6 @@ TRUNCATE Table reserversalle;
 
 select * from reservermateriel;
 
-delete from reservermateriel;
 
-select * from materiel;
+
+select * from salle;
